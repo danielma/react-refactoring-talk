@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 
 async function wait(ms: number) {
@@ -11,14 +11,29 @@ async function fetchJSON(path: string) {
   return fetch(path).then((x) => x.json());
 }
 
+type Person = { id: number; name: string };
+
 function App() {
   const [taskListId, setTaskListId] = useState<number>();
+  const [assigneeId, setAssigneeId] = useState<number>();
+
   const [taskLists, setTaskLists] = useState<
     Array<{ id: number; name: string }>
   >([]);
   const [taskListsIsLoading, setTaskListsIsLoading] = useState(true);
-  const [people, setPeople] = useState<Array<{ id: number; name: string }>>([]);
+  const [people, internalSetPeople] = useState<Person[]>([]);
   const [peopleIsLoading, setPeopleIsLoading] = useState(false);
+
+  const setPeople = useCallback(
+    (nextPeople: Person[]) => {
+      internalSetPeople(nextPeople);
+
+      if (!nextPeople.find((p) => p.id === assigneeId)) {
+        setAssigneeId(undefined);
+      }
+    },
+    [assigneeId],
+  );
 
   useEffect(() => {
     fetchJSON("/api/task_lists")
@@ -35,7 +50,7 @@ function App() {
     } else {
       setPeople([]);
     }
-  }, [taskListId]);
+  }, [taskListId, setPeople]);
 
   return (
     <fieldset className="flex flex-col gap-4 m-2 p-2 bg-white border rounded">
@@ -61,8 +76,13 @@ function App() {
       </HStack>
       <HStack className="gap-1 items-center">
         <label htmlFor="assigneeId">Assignee:</label>
-        <Select id="assigneeId" className="flex-grow">
-          <option selected disabled>
+        <Select
+          id="assigneeId"
+          className="flex-grow"
+          onChange={(e) => setAssigneeId(parseInt(e.currentTarget.value, 10))}
+          value={assigneeId}
+        >
+          <option selected>
             {taskListId
               ? peopleIsLoading
                 ? "Loading..."

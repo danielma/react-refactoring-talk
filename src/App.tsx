@@ -1,55 +1,94 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
-function usePeople() {
-  const [people, setPeople] = useState<
-    Array<{ id: number; firstName: string; lastName: string }>
-  >([]);
-  useEffect(() => {
-    fetch("/people.json")
-      .then((x) => x.json())
-      .then(setPeople);
-  }, []);
+async function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  return people;
+async function fetchJSON(path: string) {
+  await wait(300);
+
+  return fetch(path).then((x) => x.json());
 }
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [taskListId, setTaskListId] = useState<number>();
+  const [taskLists, setTaskLists] = useState<
+    Array<{ id: number; name: string }>
+  >([]);
+  const [taskListsIsLoading, setTaskListsIsLoading] = useState(true);
+  const [people, setPeople] = useState<Array<{ id: number; name: string }>>([]);
+  const [peopleIsLoading, setPeopleIsLoading] = useState(false);
 
-  const people = usePeople();
+  useEffect(() => {
+    fetchJSON("/api/task_lists")
+      .then(setTaskLists)
+      .then(() => setTaskListsIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (taskListId) {
+      setPeopleIsLoading(true);
+      fetchJSON(`/api/task_lists/${taskListId}/people`)
+        .then(setPeople)
+        .then(() => setPeopleIsLoading(false));
+    } else {
+      setPeople([]);
+    }
+  }, [taskListId]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 3)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <ul>
-        {people.map((p) => (
-          <li key={p.id}>{p.firstName}</li>
-        ))}
-      </ul>
-    </>
+    <fieldset className="flex flex-col gap-4 m-2 p-2 bg-white border rounded">
+      <legend className="font-bold text-lg bg-white px-2 border rounded">
+        Task Editor
+      </legend>
+      <HStack className="gap-1 items-center">
+        <label htmlFor="taskListId">Task List:</label>
+        <Select
+          id="taskListId"
+          className="flex-grow"
+          onChange={(e) => setTaskListId(parseInt(e.currentTarget.value, 10))}
+        >
+          <option selected disabled>
+            {taskListsIsLoading ? "Loading..." : "Select an option"}
+          </option>
+          {taskLists.map((tl) => (
+            <option key={tl.id} value={tl.id}>
+              {tl.name}
+            </option>
+          ))}
+        </Select>
+      </HStack>
+      <HStack className="gap-1 items-center">
+        <label htmlFor="assigneeId">Assignee:</label>
+        <Select id="assigneeId" className="flex-grow">
+          <option selected disabled>
+            {taskListId
+              ? peopleIsLoading
+                ? "Loading..."
+                : "No assignee"
+              : "Select a task list"}
+          </option>
+          {people.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </Select>
+      </HStack>
+      <button className="border bg-sky-500 rounded p-1 text-white">Save</button>
+    </fieldset>
   );
+}
+
+function Select({ className, ...props }: React.HTMLProps<HTMLSelectElement>) {
+  return (
+    <select className={`border p-1 px-0.5 rounded ${className}`} {...props} />
+  );
+}
+
+function HStack({ className, ...props }: React.HTMLProps<HTMLDivElement>) {
+  return <div className={`flex flex-row ${className}`} {...props} />;
 }
 
 export default App;

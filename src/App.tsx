@@ -15,12 +15,12 @@ async function fetchJSON(path: string) {
 type Actor = { id: number; name: string };
 type Job = { movieId: number | undefined; actorId: number | undefined };
 
-function Form({
+export function Form({
   onSubmit,
   defaultJob,
 }: {
   onSubmit: (data: Job) => unknown;
-  defaultJob: Job | undefined;
+  defaultJob?: Partial<Job> | undefined;
 }) {
   const [movieId, setMovieId] = useState<number | undefined>(
     defaultJob?.movieId,

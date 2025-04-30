@@ -6,6 +6,10 @@ import dataSource from "./public/tasks_source.json";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  test: {
+    environment: "jsdom",
+    include: ["**/*.test.tsx"],
+  },
   server: {
     proxy: {
       "/api": {

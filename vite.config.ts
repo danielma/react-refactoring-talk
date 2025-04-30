@@ -13,23 +13,23 @@ export default defineConfig({
         bypass(req, res) {
           res.setHeader("Content-Type", "application/json");
 
-          // /api/task_lists
-          // /api/task_lists/${id}/people
+          // /api/movies
+          // /api/movies/${id}/people
           const parts = req.url.slice(1).split("/").slice(1).join("/");
-          const peopleMatch = parts.match(/^task_lists\/(\d+)\/people$/);
+          const peopleMatch = parts.match(/^movies\/(\d+)\/people$/);
 
-          if (parts === "task_lists") {
+          if (parts === "movies") {
             const justTheLists = dataSource.map(({ id, name }) => ({
               id,
               name,
             }));
             res.end(JSON.stringify(justTheLists));
           } else if (peopleMatch) {
-            const listId = parseInt(peopleMatch[1], 10);
-            const taskList = dataSource.find((tl) => tl.id === listId);
+            const movieId = parseInt(peopleMatch[1], 10);
+            const movie = dataSource.find((m) => m.id === movieId);
 
-            if (taskList) {
-              res.end(JSON.stringify(taskList.people));
+            if (movie) {
+              res.end(JSON.stringify(movie.people));
             }
           }
 

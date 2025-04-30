@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { VStack } from "./ui";
+import { Select, VStack } from "./ui";
 import "./App.css";
 
 async function wait(ms: number) {
@@ -15,9 +15,19 @@ async function fetchJSON(path: string) {
 type Actor = { id: number; name: string };
 type Job = { movieId: number | undefined; actorId: number | undefined };
 
-function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
-  const [movieId, setMovieId] = useState<number>();
-  const [actorId, setActorId] = useState<number>();
+function Form({
+  onSubmit,
+  defaultJob,
+}: {
+  onSubmit: (data: Job) => unknown;
+  defaultJob: Job | undefined;
+}) {
+  const [movieId, setMovieId] = useState<number | undefined>(
+    defaultJob?.movieId,
+  );
+  const [actorId, setActorId] = useState<number | undefined>(
+    defaultJob?.actorId,
+  );
 
   const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
   const [moviesIsLoading, setMoviesIsLoading] = useState(true);
@@ -60,6 +70,12 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
     [onSubmit, actorId, movieId],
   );
 
+  const warnings = [
+    defaultJob?.movieId &&
+      movieId !== defaultJob.movieId &&
+      "Switching movie sets!",
+  ].filter(Boolean);
+
   return (
     <form onSubmit={handleSubmit}>
       <fieldset className="flex flex-col gap-2 m-2 p-2 bg-white border rounded shadow">
@@ -78,6 +94,7 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
             id="movieId"
             name="movie_id"
             className="flex-grow"
+            value={movieId}
             onChange={(e) => setMovieId(parseInt(e.currentTarget.value, 10))}
           >
             <option selected disabled>
@@ -105,7 +122,7 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
             }
             value={actorId}
           >
-            <option selected value="">
+            <option value="">
               {movieId
                 ? actorsIsLoading
                   ? "Loading..."
@@ -119,6 +136,11 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
             ))}
           </Select>
         </VStack>
+        {warnings.length > 0 && (
+          <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
+            {warnings.join(",")}
+          </div>
+        )}
         <button className="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80">
           Save
         </button>
@@ -127,23 +149,55 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
   );
 }
 
-function Select({ className, ...props }: React.HTMLProps<HTMLSelectElement>) {
-  return (
-    <select className={`border p-1 px-0.5 rounded ${className}`} {...props} />
-  );
+function tryParseJson(source: string) {
+  try {
+    return JSON.parse(source);
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
 }
 
+const InitialJobLink = ({
+  job,
+  className,
+  ...props
+}: { job: Partial<Job> } & React.HTMLProps<HTMLAnchorElement>) => (
+  <a
+    className={`text-sky-700 underline ${className}`}
+    href={`?initialJob=${encodeURIComponent(JSON.stringify(job))}`}
+    {...props}
+  />
+);
+
 export default function App() {
-  const [job, setJob] = useState<Job>();
+  const [job, setJob] = useState<Job>(() => {
+    const params = new URL(window.location.toString()).searchParams;
+    const initialJob = params.get("initialJob");
+
+    return tryParseJson(decodeURIComponent(initialJob || ""));
+  });
 
   return (
     <VStack className="gap-6">
-      <Form onSubmit={setJob} />
+      <Form onSubmit={setJob} defaultJob={job} />
       {job && (
         <pre className="bg-gray-200 border rounded p-4">
           {JSON.stringify(job, null, 2)}
         </pre>
       )}
+      <div className="bg-white border rounded p-4">
+        <ul>
+          <li>
+            <InitialJobLink job={{ movieId: 4 }}>Initial movie</InitialJobLink>
+          </li>
+          <li>
+            <InitialJobLink job={{ movieId: 2, actorId: 7 }}>
+              Initial movie & actor
+            </InitialJobLink>
+          </li>
+        </ul>
+      </div>
     </VStack>
   );
 }

@@ -7,13 +7,19 @@ import { setupServer } from "msw/node";
 
 const server = setupServer(
   http.get("/api/movies", () => {
-    return HttpResponse.json([{ id: 1, name: "A cool movie!" }]);
+    return HttpResponse.json([
+      { id: 1, name: "A cool movie!" },
+      { id: 2, name: "The sequel" },
+    ]);
   }),
   http.get("/api/movies/1/people", () => {
     return HttpResponse.json([{ id: 2, name: "Daniel Ma" }]);
   }),
   http.get("/api/movies/2/people", () => {
-    return HttpResponse.json([]);
+    return HttpResponse.json([
+      { id: 2, name: "Daniel Ma" },
+      { id: 3, name: "Zurg Burgess" },
+    ]);
   }),
 );
 
@@ -44,17 +50,35 @@ it("select a movie", async () => {
   expect(response).toEqual({ movieId: 1, actorId: 2 });
 });
 
-it("change the initial movie", async () => {
+it("change the movie, but keep the actor", async () => {
   const user = userEvent.setup();
   const { asFragment } = render(
-    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2 }} />,
+    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2, actorId: 2 }} />,
   );
 
   expect(asFragment()).toMatchSnapshot();
 
-  await screen.findByText("A cool movie!");
+  await screen.findByText("The sequel");
   await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);
+  await screen.findByText("Daniel Ma");
 
   expect(asFragment()).toMatchSnapshot();
+});
+
+it("change the movie, and the actor is no longer available", async () => {
+  const user = userEvent.setup();
+  const { asFragment } = render(
+    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2, actorId: 3 }} />,
+  );
+
+  expect(asFragment()).toMatchSnapshot();
+
+  await screen.findByText("The sequel");
+  await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);
+  await screen.findByText("Any role is great");
+
+  expect(asFragment()).toMatchSnapshot();
+
+  expect(screen.getByText(/work with/)).not.toBeNull();
 });
 

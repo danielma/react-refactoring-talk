@@ -32,7 +32,7 @@ export function Form({
     defaultJob?.actorId,
   );
 
-  useMovies();
+  const { movies: unusedMovies, moviesIsLoading: unusedMoviesIsLoading } = useMovies();
 
   const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
   const [moviesIsLoading, setMoviesIsLoading] = useState(true);

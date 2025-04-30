@@ -5,6 +5,8 @@ import { fetchJSON } from "./api";
 type Actor = { id: number; name: string };
 export type Job = { movieId: number | undefined; actorId: number | undefined };
 
+function useMovies() {}
+
 export function Form({
   onSubmit,
   defaultJob,
@@ -18,6 +20,8 @@ export function Form({
   const [actorId, setActorId] = useState<number | undefined>(
     defaultJob?.actorId,
   );
+
+  useMovies();
 
   const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
   const [moviesIsLoading, setMoviesIsLoading] = useState(true);

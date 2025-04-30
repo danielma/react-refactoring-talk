@@ -43,6 +43,9 @@ export function Form({
       .then(() => setMoviesIsLoading(false));
   }, []);
 
+  movies = unusedMovies
+  moviesIsLoading = unusedMoviesIsLoading
+
   const [actors, internalSetActors] = useState<Actor[]>([]);
   const [actorsIsLoading, setActorsIsLoading] = useState(false);
 

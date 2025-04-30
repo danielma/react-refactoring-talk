@@ -192,6 +192,11 @@ export default function App() {
               Initial movie & actor
             </InitialJobLink>
           </li>
+          <li>
+            <InitialJobLink job={{ movieId: 5, actorId: 2 }}>
+              Initial actor is a child
+            </InitialJobLink>
+          </li>
         </ul>
       </div>
     </VStack>

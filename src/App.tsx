@@ -70,12 +70,6 @@ export function Form({
     [onSubmit, actorId, movieId],
   );
 
-  const warnings = [
-    defaultJob?.movieId &&
-      movieId !== defaultJob.movieId &&
-      "Switching movie sets!",
-  ].filter(Boolean);
-
   return (
     <form onSubmit={handleSubmit}>
       <fieldset className="flex flex-col gap-2 m-2 p-2 bg-white border rounded shadow">
@@ -145,9 +139,9 @@ export function Form({
             ))}
           </Select>
         </VStack>
-        {warnings.length > 0 && (
+        {defaultJob?.movieId && movieId !== defaultJob.movieId && (
           <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
-            {warnings.join(",")}
+            Switching movie sets!
           </div>
         )}
         <button className="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80">

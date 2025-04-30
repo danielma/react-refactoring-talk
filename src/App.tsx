@@ -32,19 +32,7 @@ export function Form({
     defaultJob?.actorId,
   );
 
-  const { movies: unusedMovies, moviesIsLoading: unusedMoviesIsLoading } = useMovies();
-
-  let [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
-  let [moviesIsLoading, setMoviesIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchJSON("/api/movies")
-      .then(setMovies)
-      .then(() => setMoviesIsLoading(false));
-  }, []);
-
-  movies = unusedMovies
-  moviesIsLoading = unusedMoviesIsLoading
+  const { movies, moviesIsLoading } = useMovies();
 
   const [actors, internalSetActors] = useState<Actor[]>([]);
   const [actorsIsLoading, setActorsIsLoading] = useState(false);

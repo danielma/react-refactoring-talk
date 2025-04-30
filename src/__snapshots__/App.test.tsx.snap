@@ -11,19 +11,6 @@ exports[`change the initial movie 1`] = `
       >
         Choose a job
       </legend>
-      <details>
-        <summary>
-          Instructions
-        </summary>
-        <p
-          class="mb-1"
-        >
-          Here, you can pick a job in Hollywood. First, select your movie, then decide if you want to be assigned to a specific actor, or will take any job on set
-        </p>
-        <p>
-          For this exercise, we need to keep all existing behavior and add an additional warning if you are re-assigning yourself to a child actor (someone under 18)
-        </p>
-      </details>
       <div
         class="flex flex-col "
       >
@@ -85,19 +72,6 @@ exports[`change the initial movie 2`] = `
       >
         Choose a job
       </legend>
-      <details>
-        <summary>
-          Instructions
-        </summary>
-        <p
-          class="mb-1"
-        >
-          Here, you can pick a job in Hollywood. First, select your movie, then decide if you want to be assigned to a specific actor, or will take any job on set
-        </p>
-        <p>
-          For this exercise, we need to keep all existing behavior and add an additional warning if you are re-assigning yourself to a child actor (someone under 18)
-        </p>
-      </details>
       <div
         class="flex flex-col "
       >
@@ -169,19 +143,6 @@ exports[`initial state 1`] = `
       >
         Choose a job
       </legend>
-      <details>
-        <summary>
-          Instructions
-        </summary>
-        <p
-          class="mb-1"
-        >
-          Here, you can pick a job in Hollywood. First, select your movie, then decide if you want to be assigned to a specific actor, or will take any job on set
-        </p>
-        <p>
-          For this exercise, we need to keep all existing behavior and add an additional warning if you are re-assigning yourself to a child actor (someone under 18)
-        </p>
-      </details>
       <div
         class="flex flex-col "
       >
@@ -243,19 +204,6 @@ exports[`select a movie 1`] = `
       >
         Choose a job
       </legend>
-      <details>
-        <summary>
-          Instructions
-        </summary>
-        <p
-          class="mb-1"
-        >
-          Here, you can pick a job in Hollywood. First, select your movie, then decide if you want to be assigned to a specific actor, or will take any job on set
-        </p>
-        <p>
-          For this exercise, we need to keep all existing behavior and add an additional warning if you are re-assigning yourself to a child actor (someone under 18)
-        </p>
-      </details>
       <div
         class="flex flex-col "
       >

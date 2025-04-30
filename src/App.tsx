@@ -66,21 +66,6 @@ export function Form({
         <legend className="font-bold text-lg bg-white px-2 border rounded">
           Choose a job
         </legend>
-        <details>
-          <summary>Instructions</summary>
-
-          <p className="mb-1">
-            Here, you can pick a job in Hollywood. First, select your movie,
-            then decide if you want to be assigned to a specific actor, or will
-            take any job on set
-          </p>
-
-          <p>
-            For this exercise, we need to keep all existing behavior and add an
-            additional warning if you are re-assigning yourself to a child actor
-            (someone under 18)
-          </p>
-        </details>
         <VStack className="">
           <label htmlFor="movieId">Movie:</label>
           <Select
@@ -180,6 +165,21 @@ export default function App() {
         </pre>
       )}
       <div className="bg-white border rounded p-4">
+        <details>
+          <summary>Instructions</summary>
+
+          <p className="mb-1">
+            Here, you can pick a job in Hollywood. First, select your movie,
+            then decide if you want to be assigned to a specific actor, or will
+            take any job on set
+          </p>
+
+          <p>
+            For this exercise, we need to keep all existing behavior and add an
+            additional warning if you are re-assigning yourself to a child actor
+            (someone under 18)
+          </p>
+        </details>
         <ul>
           <li>
             <InitialJobLink>No initial job</InitialJobLink>

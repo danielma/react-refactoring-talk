@@ -1,16 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Select, VStack } from "./ui";
-import "./App.css";
-
-async function wait(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function fetchJSON(path: string) {
-  await wait(300);
-
-  return fetch(path).then((x) => x.json());
-}
+import { fetchJSON } from "./api";
 
 type Actor = { id: number; name: string };
 export type Job = { movieId: number | undefined; actorId: number | undefined };
@@ -162,10 +152,10 @@ function tryParseJson(source: string) {
 }
 
 const InitialJobLink = ({
-  job,
+  job = {},
   className,
   ...props
-}: { job: Partial<Job> } & React.HTMLProps<HTMLAnchorElement>) => (
+}: { job?: Partial<Job> } & React.HTMLProps<HTMLAnchorElement>) => (
   <a
     className={`text-sky-700 underline ${className}`}
     href={`?initialJob=${encodeURIComponent(JSON.stringify(job))}`}
@@ -191,6 +181,9 @@ export default function App() {
       )}
       <div className="bg-white border rounded p-4">
         <ul>
+          <li>
+            <InitialJobLink>No initial job</InitialJobLink>
+          </li>
           <li>
             <InitialJobLink job={{ movieId: 4 }}>Initial movie</InitialJobLink>
           </li>

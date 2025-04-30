@@ -125,7 +125,12 @@ exports[`select a movie 1`] = `
           <option
             value=""
           >
-            Select a movie
+            Any role is great
+          </option>
+          <option
+            value="1"
+          >
+            Daniel Ma
           </option>
         </select>
       </div>

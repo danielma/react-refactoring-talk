@@ -13,7 +13,7 @@ async function fetchJSON(path: string) {
 }
 
 type Actor = { id: number; name: string };
-type Job = { movieId: number | undefined; actorId: number | undefined };
+export type Job = { movieId: number | undefined; actorId: number | undefined };
 
 export function Form({
   onSubmit,

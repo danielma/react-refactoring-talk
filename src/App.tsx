@@ -62,7 +62,7 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <fieldset className="flex flex-col gap-2 m-2 p-2 bg-white border rounded">
+      <fieldset className="flex flex-col gap-2 m-2 p-2 bg-white border rounded shadow">
         <legend className="font-bold text-lg bg-white px-2 border rounded">
           Choose a job
         </legend>
@@ -119,7 +119,7 @@ function Form({ onSubmit }: { onSubmit: (data: Job) => unknown }) {
             ))}
           </Select>
         </VStack>
-        <button className="border bg-sky-500 rounded p-1 text-white">
+        <button className="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80">
           Save
         </button>
       </fieldset>

@@ -21,6 +21,13 @@ export function Form({
 
   const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
   const [moviesIsLoading, setMoviesIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchJSON("/api/movies")
+      .then(setMovies)
+      .then(() => setMoviesIsLoading(false));
+  }, []);
+
   const [actors, internalSetActors] = useState<Actor[]>([]);
   const [actorsIsLoading, setActorsIsLoading] = useState(false);
 
@@ -32,12 +39,6 @@ export function Form({
         ? currentActorId
         : undefined,
     );
-  }, []);
-
-  useEffect(() => {
-    fetchJSON("/api/movies")
-      .then(setMovies)
-      .then(() => setMoviesIsLoading(false));
   }, []);
 
   useEffect(() => {

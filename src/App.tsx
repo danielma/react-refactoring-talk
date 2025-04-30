@@ -114,11 +114,15 @@ export function Form({
             ))}
           </Select>
         </VStack>
-        {defaultJob?.movieId && movieId !== defaultJob.movieId && (
-          <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
-            Switching movie sets!
-          </div>
-        )}
+        {defaultJob?.movieId &&
+          defaultJob?.actorId &&
+          defaultJob.movieId !== movieId &&
+          !actors.map((a) => a.id).includes(defaultJob.actorId) && (
+            <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
+              The actor you used to work with isn't in the cast for the new
+              movie you selected
+            </div>
+          )}
         <button className="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80">
           Save
         </button>
@@ -168,17 +172,22 @@ export default function App() {
         <details>
           <summary>Instructions</summary>
 
-          <p className="mb-1">
-            Here, you can pick a job in Hollywood. First, select your movie,
-            then decide if you want to be assigned to a specific actor, or will
-            take any job on set
-          </p>
+          <VStack className="gap-1">
+            <p>
+              Here, you can pick a job in Hollywood. First, select your movie,
+              then decide if you want to be assigned to a specific actor, or
+              will take any job on set
+            </p>
 
-          <p>
-            For this exercise, we need to keep all existing behavior and add an
-            additional warning if you are re-assigning yourself to a child actor
-            (someone under 18)
-          </p>
+            <p>For this exercise, we have a new requirement:</p>
+
+            <p>
+              When you select an actor who is a child ({"<"} 17 years old), the
+              form will disable, and a new checkbox will appear requiring you to
+              confirm you are able to work with child actors. If you initially
+              had a child actor selected, no such warning is required
+            </p>
+          </VStack>
         </details>
         <ul>
           <li>

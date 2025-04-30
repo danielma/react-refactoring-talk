@@ -12,6 +12,9 @@ const server = setupServer(
   http.get("/api/movies/1/people", () => {
     return HttpResponse.json([{ id: 2, name: "Daniel Ma" }]);
   }),
+  http.get("/api/movies/2/people", () => {
+    return HttpResponse.json([]);
+  }),
 );
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
@@ -40,3 +43,18 @@ it("select a movie", async () => {
   expect(asFragment()).toMatchSnapshot();
   expect(response).toEqual({ movieId: 1, actorId: 2 });
 });
+
+it("change the initial movie", async () => {
+  const user = userEvent.setup();
+  const { asFragment } = render(
+    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2 }} />,
+  );
+
+  expect(asFragment()).toMatchSnapshot();
+
+  await screen.findByText("A cool movie!");
+  await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);
+
+  expect(asFragment()).toMatchSnapshot();
+});
+

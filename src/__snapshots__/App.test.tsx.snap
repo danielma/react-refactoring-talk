@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`fragment 1`] = `
+exports[`initial state 1`] = `
 <DocumentFragment>
   <form>
     <fieldset
@@ -34,6 +34,78 @@ exports[`fragment 1`] = `
             disabled=""
           >
             Loading...
+          </option>
+        </select>
+      </div>
+      <div
+        class="flex flex-col "
+      >
+        <label
+          for="actorId"
+        >
+          Actor:
+        </label>
+        <select
+          class="border p-1 px-0.5 rounded flex-grow"
+          id="actorId"
+          name="actor_id"
+        >
+          <option
+            value=""
+          >
+            Select a movie
+          </option>
+        </select>
+      </div>
+      <button
+        class="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80"
+      >
+        Save
+      </button>
+    </fieldset>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`select a movie 1`] = `
+<DocumentFragment>
+  <form>
+    <fieldset
+      class="flex flex-col gap-2 m-2 p-2 bg-white border rounded shadow"
+    >
+      <legend
+        class="font-bold text-lg bg-white px-2 border rounded"
+      >
+        Choose a job
+      </legend>
+      <details>
+        <summary>
+          Instructions
+        </summary>
+        Here, you can pick a job in Hollywood. First, select your movie, then decide if you want to be assigned to a specific actor, or will take any job on set
+      </details>
+      <div
+        class="flex flex-col "
+      >
+        <label
+          for="movieId"
+        >
+          Movie:
+        </label>
+        <select
+          class="border p-1 px-0.5 rounded flex-grow"
+          id="movieId"
+          name="movie_id"
+        >
+          <option
+            disabled=""
+          >
+            Select an option
+          </option>
+          <option
+            value="1"
+          >
+            A cool movie!
           </option>
         </select>
       </div>

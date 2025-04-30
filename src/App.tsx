@@ -34,8 +34,8 @@ export function Form({
 
   const { movies: unusedMovies, moviesIsLoading: unusedMoviesIsLoading } = useMovies();
 
-  const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
-  const [moviesIsLoading, setMoviesIsLoading] = useState(true);
+  let [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
+  let [moviesIsLoading, setMoviesIsLoading] = useState(true);
 
   useEffect(() => {
     fetchJSON("/api/movies")

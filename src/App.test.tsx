@@ -50,6 +50,19 @@ it("select a movie", async () => {
   expect(response).toEqual({ movieId: 1, actorId: 2 });
 });
 
+it("initially selector actor works", async () => {
+  const { asFragment } = render(
+    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2, actorId: 2 }} />,
+  );
+
+  await screen.findByText("The sequel");
+
+  expect(
+    (screen.getByText("Daniel Ma") as HTMLOptionElement).selected,
+  ).toBeTruthy();
+  expect(asFragment()).toMatchSnapshot();
+});
+
 it("change the movie, but keep the actor", async () => {
   const user = userEvent.setup();
   const { asFragment } = render(

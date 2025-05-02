@@ -5,26 +5,7 @@ import { fetchJSON } from "./api";
 type Actor = { id: number; name: string };
 export type Job = { movieId: number | undefined; actorId: number | undefined };
 
-function useMovies() {
-  const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
-  const [moviesIsLoading, setMoviesIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchJSON("/api/movies")
-      .then(setMovies)
-      .then(() => setMoviesIsLoading(false));
-  }, []);
-
-  return { movies, moviesIsLoading };
-}
-
-export function Form({
-  onSubmit,
-  defaultJob,
-}: {
-  onSubmit: (data: Job) => unknown;
-  defaultJob?: Partial<Job> | undefined;
-}) {
+function useJobForm({ defaultJob }: { defaultJob?: Partial<Job> }) {
   const [movieId, setMovieId] = useState<number | undefined>(
     defaultJob?.movieId,
   );
@@ -32,10 +13,17 @@ export function Form({
     defaultJob?.actorId,
   );
 
-  const { movies, moviesIsLoading } = useMovies();
+  const [movies, setMovies] = useState<Array<{ id: number; name: string }>>([]);
+  const [moviesIsLoading, setMoviesIsLoading] = useState(true);
 
   const [actors, internalSetActors] = useState<Actor[]>([]);
   const [actorsIsLoading, setActorsIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchJSON("/api/movies")
+      .then(setMovies)
+      .then(() => setMoviesIsLoading(false));
+  }, []);
 
   const setActors = useCallback((nextActors: Actor[]) => {
     internalSetActors(nextActors);
@@ -57,6 +45,44 @@ export function Form({
       setActors([]);
     }
   }, [movieId, setActors]);
+
+  const actorAssignmentWarning =
+    defaultJob?.movieId &&
+    defaultJob?.actorId &&
+    defaultJob.movieId !== movieId &&
+    !actors.map((a) => a.id).includes(defaultJob.actorId);
+
+  return {
+    actorAssignmentWarning,
+    movies,
+    moviesIsLoading,
+    actors,
+    actorsIsLoading,
+    actorId,
+    setActorId,
+    movieId,
+    setMovieId,
+  };
+}
+
+export function Form({
+  onSubmit,
+  defaultJob,
+}: {
+  onSubmit: (data: Job) => unknown;
+  defaultJob?: Partial<Job> | undefined;
+}) {
+  const {
+    actorAssignmentWarning,
+    movies,
+    moviesIsLoading,
+    actors,
+    actorsIsLoading,
+    actorId,
+    setActorId,
+    setMovieId,
+    movieId,
+  } = useJobForm({ defaultJob });
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -121,15 +147,12 @@ export function Form({
             ))}
           </Select>
         </VStack>
-        {defaultJob?.movieId &&
-          defaultJob?.actorId &&
-          defaultJob.movieId !== movieId &&
-          !actors.map((a) => a.id).includes(defaultJob.actorId) && (
-            <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
-              The actor you used to work with isn't in the cast for the new
-              movie you selected
-            </div>
-          )}
+        {actorAssignmentWarning && (
+          <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
+            The actor you used to work with isn't in the cast for the new movie
+            you selected
+          </div>
+        )}
         <button className="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80">
           Save
         </button>

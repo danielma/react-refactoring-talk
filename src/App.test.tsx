@@ -28,6 +28,10 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 afterEach(() => cleanup());
 
+function fakeMovies() {
+  return { movies: [{ id: 1, name: "The Matrix" }], moviesIsLoading: false };
+}
+
 it("initial state", () => {
   const { asFragment } = render(<Form onSubmit={() => void 0} />);
   expect(asFragment()).toMatchSnapshot();
@@ -38,7 +42,9 @@ it("select a movie", async () => {
   let response: Job | null = null;
   const handleSubmit: React.ComponentProps<typeof Form>["onSubmit"] = (e) =>
     (response = e);
-  const { asFragment } = render(<Form onSubmit={handleSubmit} />);
+  const { asFragment } = render(
+    <Form onSubmit={handleSubmit} useMovies={fakeMovies} />,
+  );
 
   await screen.findByText("A cool movie!");
   await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);

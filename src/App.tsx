@@ -21,11 +21,9 @@ function useMovies() {
 export function Form({
   onSubmit,
   defaultJob,
-  useMovies: useMoviesHook = useMovies,
 }: {
   onSubmit: (data: Job) => unknown;
   defaultJob?: Partial<Job> | undefined;
-  useMovies?: typeof useMovies;
 }) {
   const [movieId, setMovieId] = useState<number | undefined>(
     defaultJob?.movieId,
@@ -34,7 +32,7 @@ export function Form({
     defaultJob?.actorId,
   );
 
-  const { movies, moviesIsLoading } = useMoviesHook();
+  const { movies, moviesIsLoading } = useMovies();
 
   const [actors, internalSetActors] = useState<Actor[]>([]);
   const [actorsIsLoading, setActorsIsLoading] = useState(false);

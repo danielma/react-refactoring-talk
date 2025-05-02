@@ -5,7 +5,23 @@ import { fetchJSON } from "./api";
 type Actor = { id: number; name: string };
 export type Job = { movieId: number | undefined; actorId: number | undefined };
 
-function useJobForm({ defaultJob }: { defaultJob?: Partial<Job> }) {
+function defaultFetchMovies() {
+  return fetchJSON("/api/movies");
+}
+
+function defaultFetchActors(movieId: number) {
+  return fetchJSON(`/api/movies/${movieId}/people`);
+}
+
+function useJobForm({
+  defaultJob,
+  fetchMovies = defaultFetchMovies,
+  fetchActors = defaultFetchActors,
+}: {
+  defaultJob?: Partial<Job>;
+  fetchMovies?: typeof defaultFetchMovies;
+  fetchActors?: typeof defaultFetchActors;
+}) {
   const [movieId, setMovieId] = useState<number | undefined>(
     defaultJob?.movieId,
   );
@@ -20,10 +36,10 @@ function useJobForm({ defaultJob }: { defaultJob?: Partial<Job> }) {
   const [actorsIsLoading, setActorsIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchJSON("/api/movies")
+    fetchMovies()
       .then(setMovies)
       .then(() => setMoviesIsLoading(false));
-  }, []);
+  }, [fetchMovies]);
 
   const setActors = useCallback((nextActors: Actor[]) => {
     internalSetActors(nextActors);
@@ -38,13 +54,13 @@ function useJobForm({ defaultJob }: { defaultJob?: Partial<Job> }) {
   useEffect(() => {
     if (movieId) {
       setActorsIsLoading(true);
-      fetchJSON(`/api/movies/${movieId}/people`)
+      fetchActors(movieId)
         .then(setActors)
         .then(() => setActorsIsLoading(false));
     } else {
       setActors([]);
     }
-  }, [movieId, setActors]);
+  }, [movieId, setActors, fetchActors]);
 
   const actorAssignmentWarning =
     defaultJob?.movieId &&

@@ -18,6 +18,7 @@ const server = setupServer(
     return HttpResponse.json([
       { id: 2, name: "Daniel Ma" },
       { id: 3, name: "Zurg Burgess" },
+      { id: 4, name: "Jake Lloyd", age: 9 },
     ]);
   }),
 );
@@ -82,6 +83,19 @@ describe("useJobForm", () => {
 
     expect(result.current.actorId).toBeUndefined();
     expect(result.current.warnings).toHaveProperty("length", 1);
+  });
+
+  it("select a child actor", async () => {
+    const { rerender, result } = renderHook(() =>
+      useJobForm({ defaultJob: { movieId: 2, actorId: 3 } }),
+    );
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
+
+    result.current.setActorId(4);
+    rerender();
+
+    expect(result.current.warnings).toHaveProperty("length", 1);
+    expect(result.current.warnings[0]).toMatch(/child/);
   });
 });
 

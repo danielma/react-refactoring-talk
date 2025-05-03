@@ -2,7 +2,7 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Select, VStack } from "./ui";
 import { fetchJSON } from "./api";
 
-type Actor = { id: number; name: string };
+type Actor = { id: number; name: string; age: number };
 export type Job = { movieId: number | undefined; actorId: number | undefined };
 
 function defaultFetchMovies() {
@@ -62,12 +62,18 @@ export function useJobForm({
     }
   }, [movieId, setActors, fetchActors]);
 
+  const selectedActor = actors.find((a) => a.id === actorId);
+
   const warnings = [
     defaultJob?.movieId &&
       defaultJob?.actorId &&
       defaultJob.movieId !== movieId &&
       !actors.map((a) => a.id).includes(defaultJob.actorId) &&
       "The actor you used to work with isn't in the cast for the new movie you selected",
+    defaultJob?.actorId !== actorId &&
+      selectedActor &&
+      selectedActor.age < 18 &&
+      "You're now working with a child",
   ].filter(Boolean);
 
   return {

@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+
+gem 'minitest'
+gem 'guard'
+
+gem "minitest-color", "~> 0.0.2"

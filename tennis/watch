@@ -1,0 +1,3 @@
+#! /usr/bin/env bash
+
+ls tennis*.rb | entr -r ruby tennis_test.rb

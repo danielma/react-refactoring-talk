@@ -62,14 +62,15 @@ export function useJobForm({
     }
   }, [movieId, setActors, fetchActors]);
 
-  const actorAssignmentWarning =
+  const warnings = [
     defaultJob?.movieId &&
-    defaultJob?.actorId &&
-    defaultJob.movieId !== movieId &&
-    !actors.map((a) => a.id).includes(defaultJob.actorId);
+      defaultJob?.actorId &&
+      defaultJob.movieId !== movieId &&
+      !actors.map((a) => a.id).includes(defaultJob.actorId) &&
+      "The actor you used to work with isn't in the cast for the new movie you selected",
+  ].filter(Boolean);
 
   return {
-    actorAssignmentWarning,
     movies,
     moviesIsLoading,
     actors,
@@ -78,6 +79,7 @@ export function useJobForm({
     setActorId,
     movieId,
     setMovieId,
+    warnings,
   };
 }
 
@@ -89,7 +91,6 @@ export function Form({
   defaultJob?: Partial<Job> | undefined;
 }) {
   const {
-    actorAssignmentWarning,
     movies,
     moviesIsLoading,
     actors,
@@ -98,6 +99,7 @@ export function Form({
     setActorId,
     setMovieId,
     movieId,
+    warnings,
   } = useJobForm({ defaultJob });
 
   const handleSubmit = useCallback(
@@ -163,10 +165,9 @@ export function Form({
             ))}
           </Select>
         </VStack>
-        {actorAssignmentWarning && (
+        {warnings.length > 0 && (
           <div className="border text-yellow-950 bg-yellow-200 border-yellow-600 p-2 rounded">
-            The actor you used to work with isn't in the cast for the new movie
-            you selected
+            {warnings.join(". ")}
           </div>
         )}
         <button className="border border-sky-700 bg-sky-500 rounded p-1 text-white shadow relative before:content-[''] before:absolute before:top-0 before:inset-x-px before:h-px before:bg-sky-300 before:opacity-80">

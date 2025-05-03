@@ -67,7 +67,7 @@ describe("useJobForm", () => {
     await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
     expect(result.current.actorId).toEqual(2);
-    expect(result.current.actorAssignmentWarning).toBeFalsy();
+    expect(result.current.warnings).toHaveProperty("length", 0);
   });
 
   it("change the movie, and the actor is no longer available", async () => {
@@ -81,7 +81,7 @@ describe("useJobForm", () => {
     await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
     expect(result.current.actorId).toBeUndefined();
-    expect(result.current.actorAssignmentWarning).toBeTruthy();
+    expect(result.current.warnings).toHaveProperty("length", 1);
   });
 });
 

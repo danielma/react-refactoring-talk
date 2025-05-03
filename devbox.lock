@@ -114,6 +114,54 @@
         }
       }
     },
+    "presenterm@latest": {
+      "last_modified": "2025-03-25T17:32:05Z",
+      "resolved": "github:NixOS/nixpkgs/25d1b84f5c90632a623c48d83a2faf156451e6b1#presenterm",
+      "source": "devbox-search",
+      "version": "0.12.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/iwys99ylfc69lvhvc488qhgy2db4pzj1-presenterm-0.12.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/iwys99ylfc69lvhvc488qhgy2db4pzj1-presenterm-0.12.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/clmrx79n7kmbc5vcnssq256j0wcj3z5x-presenterm-0.12.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/clmrx79n7kmbc5vcnssq256j0wcj3z5x-presenterm-0.12.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/pa5rvly0p2g4x2xvb4xhi1vaygnwcpk7-presenterm-0.12.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/pa5rvly0p2g4x2xvb4xhi1vaygnwcpk7-presenterm-0.12.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/kj86l41iy1r71r7hx07xjqp0xzaqjm82-presenterm-0.12.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/kj86l41iy1r71r7hx07xjqp0xzaqjm82-presenterm-0.12.0"
+        }
+      }
+    },
     "ruby_3_3@latest": {
       "last_modified": "2024-09-10T15:01:03Z",
       "plugin_version": "0.0.2",

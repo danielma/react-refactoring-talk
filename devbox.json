@@ -3,7 +3,8 @@
   "packages": [
     "nodejs_22@latest",
     "ruby_3_3@latest",
-    "entr@latest"
+    "entr@latest",
+    "presenterm@latest"
   ],
   "shell": {
     "init_hook": [

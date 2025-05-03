@@ -1,7 +1,6 @@
-import userEvent from "@testing-library/user-event";
-import { screen, render, cleanup } from "@testing-library/react";
-import { afterAll, afterEach, beforeAll, expect, it } from "vitest";
-import { Form, Job } from "./App";
+import { cleanup, renderHook, waitFor } from "@testing-library/react";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { useJobForm } from "./App";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 
@@ -28,70 +27,61 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 afterEach(() => cleanup());
 
-it("initial state", () => {
-  const { asFragment } = render(<Form onSubmit={() => void 0} />);
-  expect(asFragment()).toMatchSnapshot();
-});
+describe("useJobForm", () => {
+  it("select a movie", async () => {
+    const { rerender, result } = renderHook(() => useJobForm({}));
 
-it("select a movie", async () => {
-  const user = userEvent.setup();
-  let response: Job | null = null;
-  const handleSubmit: React.ComponentProps<typeof Form>["onSubmit"] = (e) =>
-    (response = e);
-  const { asFragment } = render(<Form onSubmit={handleSubmit} />);
+    expect(result.current.movieId).toBeUndefined();
 
-  await screen.findByText("A cool movie!");
-  await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);
-  await screen.findByText("Daniel Ma");
-  await user.selectOptions(screen.getByLabelText("Actor:"), ["Daniel Ma"]);
-  await user.click(screen.getByRole("button"));
+    await waitFor(() => expect(result.current.moviesIsLoading).toBe(false));
+    expect(result.current.movies).toEqual(
+      expect.arrayContaining([{ id: 1, name: "A cool movie!" }]),
+    );
+    result.current.setMovieId(1);
+    rerender();
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
+    expect(result.current.actors).toEqual(
+      expect.arrayContaining([{ id: 2, name: "Daniel Ma" }]),
+    );
+  });
 
-  expect(asFragment()).toMatchSnapshot();
-  expect(response).toEqual({ movieId: 1, actorId: 2 });
-});
+  it("initially selected actor works", async () => {
+    const { result } = renderHook(() =>
+      useJobForm({ defaultJob: { movieId: 2, actorId: 2 } }),
+    );
 
-it("initially selector actor works", async () => {
-  const { asFragment } = render(
-    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2, actorId: 2 }} />,
-  );
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
-  await screen.findByText("The sequel");
+    expect(result.current.actorId).toEqual(2);
+    expect(result.current.movieId).toEqual(2);
+  });
 
-  expect(
-    (screen.getByText("Daniel Ma") as HTMLOptionElement).selected,
-  ).toBeTruthy();
-  expect(asFragment()).toMatchSnapshot();
-});
+  it("change the movie, but keep the actor", async () => {
+    const { rerender, result } = renderHook(() =>
+      useJobForm({ defaultJob: { movieId: 2, actorId: 2 } }),
+    );
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
-it("change the movie, but keep the actor", async () => {
-  const user = userEvent.setup();
-  const { asFragment } = render(
-    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2, actorId: 2 }} />,
-  );
+    result.current.setMovieId(1);
+    rerender();
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
-  expect(asFragment()).toMatchSnapshot();
+    expect(result.current.actorId).toEqual(2);
+    expect(result.current.actorAssignmentWarning).toBeFalsy();
+  });
 
-  await screen.findByText("The sequel");
-  await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);
-  await screen.findByText("Daniel Ma");
+  it("change the movie, and the actor is no longer available", async () => {
+    const { rerender, result } = renderHook(() =>
+      useJobForm({ defaultJob: { movieId: 2, actorId: 3 } }),
+    );
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
-  expect(asFragment()).toMatchSnapshot();
-});
+    result.current.setMovieId(1);
+    rerender();
+    await waitFor(() => expect(result.current.actorsIsLoading).toBe(false));
 
-it("change the movie, and the actor is no longer available", async () => {
-  const user = userEvent.setup();
-  const { asFragment } = render(
-    <Form onSubmit={() => void 0} defaultJob={{ movieId: 2, actorId: 3 }} />,
-  );
-
-  expect(asFragment()).toMatchSnapshot();
-
-  await screen.findByText("The sequel");
-  await user.selectOptions(screen.getByLabelText("Movie:"), ["1"]);
-  await screen.findByText("Any role is great");
-
-  expect(asFragment()).toMatchSnapshot();
-
-  expect(screen.getByText(/work with/)).not.toBeNull();
+    expect(result.current.actorId).toBeUndefined();
+    expect(result.current.actorAssignmentWarning).toBeTruthy();
+  });
 });
 

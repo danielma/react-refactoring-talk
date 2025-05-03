@@ -13,7 +13,7 @@ function defaultFetchActors(movieId: number) {
   return fetchJSON(`/api/movies/${movieId}/people`);
 }
 
-function useJobForm({
+export function useJobForm({
   defaultJob,
   fetchMovies = defaultFetchMovies,
   fetchActors = defaultFetchActors,

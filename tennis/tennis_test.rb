@@ -55,7 +55,7 @@ class TestTennis < Minitest::Test
     game = tennisGameClass.new(p1Name, p2Name)
     (0..[p1Points, p2Points].max).each do |i|
       if i < p1Points
-        # game.won_point(p1Name)
+        game.won_point(p1Name)
       end
       if i < p2Points
         game.won_point(p2Name)
